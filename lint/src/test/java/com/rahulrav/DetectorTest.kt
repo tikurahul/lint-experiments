@@ -69,6 +69,7 @@ class DetectorTest {
                 """.trimIndent()
           ).indented().within("src")
       )
+      .allowMissingSdk()
       .issues(BadConfigurationProviderIssue)
       .run()
       .expect("No warnings.")
@@ -111,6 +112,7 @@ class DetectorTest {
               """.trimIndent()
         ).indented().within("src")
       )
+      .allowMissingSdk()
       .issues(BadConfigurationProviderIssue)
       .run()
       .expect(
@@ -172,6 +174,7 @@ class DetectorTest {
               """.trimIndent()
       ).indented().within("src")
     )
+    .allowMissingSdk()
     .issues(RemoveWorkManagerIntializerIssue)
     .run()
     .expect("No warnings.")
@@ -223,12 +226,15 @@ class DetectorTest {
               """.trimIndent()
         ).indented().within("src")
       )
+      .allowMissingSdk()
       .issues(RemoveWorkManagerIntializerIssue)
       .run()
       .expect("""
-        project0: Error: If an android.app.Application implements androidx.work.Configuration.Provider, 
+        AndroidManifest.xml:4: Error: If an android.app.Application implements androidx.work.Configuration.Provider, 
         the default androidx.work.impl.WorkManagerInitializer needs to be removed from tne
-         AndroidManifest.xml file. [RemoveWorkManagerIntializerId]
+        AndroidManifest.xml file. [RemoveWorkManagerIntializerId]
+           <application>
+           ^
         1 errors, 0 warnings
         """.trimIndent()
       )

@@ -27,7 +27,7 @@ class IssueRegistry : IssueRegistry() {
         val RemoveWorkManagerIntializerDescription = """
             If an android.app.Application implements androidx.work.Configuration.Provider, 
             the default androidx.work.impl.WorkManagerInitializer needs to be removed from tne
-             AndroidManifest.xml file.
+            AndroidManifest.xml file.
         """.trimIndent()
 
         val NoisyIssue = Issue.create(
