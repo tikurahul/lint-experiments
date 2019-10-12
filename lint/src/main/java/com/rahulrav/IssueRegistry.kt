@@ -9,9 +9,9 @@ import java.util.*
 class IssueRegistry : IssueRegistry() {
     override val issues: List<Issue>
         get() = listOf(
-            NoisyIssue,
-            BadConfigurationProviderIssue,
-            RemoveWorkManagerIntializerIssue
+                NoisyIssue,
+                BadConfigurationProviderIssue,
+                RemoveWorkManagerIntializerIssue
         )
 
     companion object {
@@ -31,36 +31,36 @@ class IssueRegistry : IssueRegistry() {
         """.trimIndent()
 
         val NoisyIssue = Issue.create(
-            id = NoisyIssueId,
-            briefDescription = NoisyIssueDescription,
-            explanation = NoisyIssueDescription,
-            category = Category.CORRECTNESS,
-            priority = 4,
-            severity = Severity.INFORMATIONAL,
-            implementation = Implementation(NoisyDetector::class.java, Scope.MANIFEST_SCOPE)
+                id = NoisyIssueId,
+                briefDescription = NoisyIssueDescription,
+                explanation = NoisyIssueDescription,
+                category = Category.CORRECTNESS,
+                priority = 4,
+                severity = Severity.INFORMATIONAL,
+                implementation = Implementation(NoisyDetector::class.java, Scope.MANIFEST_SCOPE)
         )
 
         val BadConfigurationProviderIssue = Issue.create(
-            id = BadConfigurationProviderId,
-            briefDescription = BadConfigurationProviderDescription,
-            explanation = BadConfigurationProviderDescription,
-            category = Category.CORRECTNESS,
-            priority = 2,
-            severity = Severity.FATAL,
-            implementation = Implementation(
-                BadConfigurationProviderDetector::class.java, Scope.JAVA_FILE_SCOPE)
+                id = BadConfigurationProviderId,
+                briefDescription = BadConfigurationProviderDescription,
+                explanation = BadConfigurationProviderDescription,
+                category = Category.CORRECTNESS,
+                priority = 2,
+                severity = Severity.FATAL,
+                implementation = Implementation(
+                        BadConfigurationProviderDetector::class.java, Scope.JAVA_FILE_SCOPE)
         )
 
         val RemoveWorkManagerIntializerIssue = Issue.create(
-            id = RemoveWorkManagerIntializerId,
-            briefDescription = RemoveWorkManagerIntializerDescription,
-            explanation = RemoveWorkManagerIntializerDescription,
-            category = Category.CORRECTNESS,
-            priority = 2,
-            severity = Severity.FATAL,
-            implementation = Implementation(
-                RemoveWorkManagerInitializerDetector::class.java,
-                EnumSet.of(Scope.JAVA_FILE, Scope.MANIFEST))
+                id = RemoveWorkManagerIntializerId,
+                briefDescription = RemoveWorkManagerIntializerDescription,
+                explanation = RemoveWorkManagerIntializerDescription,
+                category = Category.CORRECTNESS,
+                priority = 2,
+                severity = Severity.FATAL,
+                implementation = Implementation(
+                        RemoveWorkManagerInitializerDetector::class.java,
+                        EnumSet.of(Scope.JAVA_FILE, Scope.MANIFEST))
         )
     }
 }

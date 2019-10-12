@@ -1,4 +1,4 @@
-package com.rahulrav
+package com.rahulrav.app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
