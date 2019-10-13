@@ -25,8 +25,8 @@ class RemoveWorkManagerInitializerDetector : Detector(), XmlScanner, SourceCodeS
 
             if (provider != null) {
                 location = context.getLocation(provider)
-                val name = provider.attributes.getNamedItemNS(ANDROID_NS, ATTRIBUTE_NAME).textContent
-                val remove = provider.attributes.getNamedItemNS(TOOLS_NS, ATTRIBUTE_NODE).textContent
+                val name = provider.attributes.getNamedItemNS(ANDROID_NS, ATTRIBUTE_NAME)?.textContent
+                val remove = provider.attributes.getNamedItemNS(TOOLS_NS, ATTRIBUTE_NODE)?.textContent
                 if (name == "androidx.work.impl.WorkManagerInitializer" && remove == "remove") {
                     removedInitializer = true
                 }

@@ -7,6 +7,7 @@ import com.rahulrav.IssueRegistry.Companion.RemoveWorkManagerIntializerIssue
 import com.rahulrav.Stubs.ANDROID_APP_CLASS
 import com.rahulrav.Stubs.APP_IMPLEMENTS_CONFIGURATION_PROVIDER
 import com.rahulrav.Stubs.EMPTY_MANIFEST
+import com.rahulrav.Stubs.MANIFEST_WITH_INITIALIZER
 import com.rahulrav.Stubs.MANIFEST_WITH_NO_INITIALIZER
 import com.rahulrav.Stubs.OTHER_CLASS_IMPLEMENTS_CONFIGURATION_PROVIDER
 import com.rahulrav.Stubs.WORK_MANAGER_CONFIGURATION_INTERFACE
@@ -72,7 +73,7 @@ class DetectorTest {
     @Test
     fun testRemoveWorkManagerInitializerDetector_failure() {
         lint().files(
-                EMPTY_MANIFEST,
+                MANIFEST_WITH_INITIALIZER,
                 WORK_MANAGER_CONFIGURATION_INTERFACE,
                 ANDROID_APP_CLASS,
                 APP_IMPLEMENTS_CONFIGURATION_PROVIDER)
@@ -81,11 +82,11 @@ class DetectorTest {
                 .run()
                 .expect(
                         """
-                        AndroidManifest.xml:4: Error: If an android.app.Application implements androidx.work.Configuration.Provider, 
+                        AndroidManifest.xml:5: Error: If an android.app.Application implements androidx.work.Configuration.Provider, 
                         the default androidx.work.impl.WorkManagerInitializer needs to be removed from tne
                         AndroidManifest.xml file. [RemoveWorkManagerIntializerId]
-                            <application>
-                            ^
+                                 <provider
+                                 ^
                         1 errors, 0 warnings
                       """.trimIndent()
                 )

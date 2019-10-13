@@ -31,6 +31,20 @@ object Stubs {
                 </manifest>
             """.trimIndent()).indented()
 
+    val MANIFEST_WITH_INITIALIZER: TestFile = manifest(
+            """
+               <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  package="com.example">
+                  <application>
+                        <provider
+                          android:name="androidx.work.impl.WorkManagerInitializer"
+                          android:authorities="com.example.workmanager-init"/>
+                        
+                  </application>
+                </manifest>
+            """.trimIndent()).indented()
+
     val WORK_MANAGER_CONFIGURATION_INTERFACE: TestFile = kotlin(
             "androidx/work/Configuration.kt",
             """
