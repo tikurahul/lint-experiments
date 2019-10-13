@@ -71,7 +71,29 @@ class DetectorTest {
     }
 
     @Test
-    fun testRemoveWorkManagerInitializerDetector_failure() {
+    fun testRemoveWorkManagerInitializerDetector_failure_emptyManifest() {
+        lint().files(
+                EMPTY_MANIFEST,
+                WORK_MANAGER_CONFIGURATION_INTERFACE,
+                ANDROID_APP_CLASS,
+                APP_IMPLEMENTS_CONFIGURATION_PROVIDER)
+                .allowMissingSdk()
+                .issues(RemoveWorkManagerIntializerIssue)
+                .run()
+                .expect(
+                        """
+                        AndroidManifest.xml:4: Error: If an android.app.Application implements androidx.work.Configuration.Provider, 
+                        the default androidx.work.impl.WorkManagerInitializer needs to be removed from tne
+                        AndroidManifest.xml file. [RemoveWorkManagerIntializerId]
+                            <application>
+                            ^
+                        1 errors, 0 warnings
+                        """.trimIndent()
+                )
+    }
+
+    @Test
+    fun testRemoveWorkManagerInitializerDetector_failure_manifestWithInitializer() {
         lint().files(
                 MANIFEST_WITH_INITIALIZER,
                 WORK_MANAGER_CONFIGURATION_INTERFACE,
