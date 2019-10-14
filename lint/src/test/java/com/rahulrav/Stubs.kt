@@ -102,5 +102,4 @@ object Stubs {
                 }
             """)
             .indented().within("src")
-
 }
