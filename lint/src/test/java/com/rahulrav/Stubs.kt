@@ -29,7 +29,7 @@ object Stubs {
                         
                   </application>
                 </manifest>
-            """.trimIndent()).indented()
+            """).indented()
 
     val MANIFEST_WITH_INITIALIZER: TestFile = manifest(
             """
@@ -43,7 +43,7 @@ object Stubs {
                         
                   </application>
                 </manifest>
-            """.trimIndent()).indented()
+            """).indented()
 
     val WORK_MANAGER_CONFIGURATION_INTERFACE: TestFile = kotlin(
             "androidx/work/Configuration.kt",
@@ -54,7 +54,7 @@ object Stubs {
                      fun getWorkManagerConfiguration(): Configuration
                    } 
                  }  
-            """.trimIndent())
+            """)
             .indented().within("src")
 
     val ANDROID_APP_CLASS: TestFile = kotlin(
@@ -66,7 +66,7 @@ object Stubs {
                       
                   }
                 }
-            """.trimIndent())
+            """)
             .indented().within("src")
 
     val APP_IMPLEMENTS_CONFIGURATION_PROVIDER: TestFile = kotlin(
@@ -84,7 +84,7 @@ object Stubs {
                   }
                   override fun getWorkManagerConfiguration(): Configuration = Config()
                 }
-            """.trimIndent())
+            """)
             .indented().within("src")
 
     val OTHER_CLASS_IMPLEMENTS_CONFIGURATION_PROVIDER: TestFile = kotlin(
@@ -100,7 +100,7 @@ object Stubs {
                   }
                   override fun getWorkManagerConfiguration(): Configuration = Config()
                 }
-            """.trimIndent())
+            """)
             .indented().within("src")
 
 }
