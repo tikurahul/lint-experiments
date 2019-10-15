@@ -22,9 +22,3 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-jar {
-    manifest {
-        attributes("Lint-Registry-v2": "com.rahulrav.IssueRegistry")
-    }
-}
-
