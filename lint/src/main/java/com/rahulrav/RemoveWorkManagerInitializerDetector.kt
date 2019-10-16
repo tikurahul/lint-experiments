@@ -5,6 +5,8 @@ package com.rahulrav
 import com.android.tools.lint.detector.api.*
 import org.jetbrains.uast.UClass
 import org.w3c.dom.Element
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 
 class RemoveWorkManagerInitializerDetector : Detector(), XmlScanner, SourceCodeScanner {
 
@@ -21,13 +23,15 @@ class RemoveWorkManagerInitializerDetector : Detector(), XmlScanner, SourceCodeS
             analyzed = true
             val document = context.client.getMergedManifest(context.project)
             val application = document?.getElementsByTagName("application")?.item(0)
-            val provider = document?.getElementsByTagName("provider")?.item(0)
-
+            val providers = document?.getElementsByTagName("provider")
+            val provider = providers.find { node ->
+                val name = node.attributes.getNamedItemNS(ANDROID_NS, ATTRIBUTE_NAME)?.textContent
+                name == "androidx.work.impl.WorkManagerInitializer"
+            }
             if (provider != null) {
                 location = context.getLocation(provider)
-                val name = provider.attributes.getNamedItemNS(ANDROID_NS, ATTRIBUTE_NAME)?.textContent
-                val remove = provider.attributes.getNamedItemNS(TOOLS_NS, ATTRIBUTE_NODE)?.textContent
-                if (name == "androidx.work.impl.WorkManagerInitializer" && remove == "remove") {
+                val remove = provider.attributes.getNamedItemNS(TOOLS_NS, ATTRIBUTE_NODE)
+                if (remove?.textContent == "remove") {
                     removedInitializer = true
                 }
             } else if (application != null) {
@@ -66,5 +70,19 @@ class RemoveWorkManagerInitializerDetector : Detector(), XmlScanner, SourceCodeS
 
         private const val ATTRIBUTE_NAME = "name"
         private const val ATTRIBUTE_NODE = "node"
+
+        fun NodeList?.find(fn: (node: Node) -> Boolean): Node? {
+            if (this == null) {
+                return null
+            } else {
+                for (i in 0 until this.length) {
+                    val node = this.item(i)
+                    if (fn(node)) {
+                        return node
+                    }
+                }
+                return null
+            }
+        }
     }
 }
