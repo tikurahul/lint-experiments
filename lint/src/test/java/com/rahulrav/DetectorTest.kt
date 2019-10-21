@@ -7,9 +7,13 @@ import com.rahulrav.IssueRegistry.Companion.RemoveWorkManagerIntializerIssue
 import com.rahulrav.Stubs.ANDROID_APP_CLASS
 import com.rahulrav.Stubs.APP_IMPLEMENTS_CONFIGURATION_PROVIDER
 import com.rahulrav.Stubs.EMPTY_MANIFEST
+import com.rahulrav.Stubs.EXPERIMENTAL_KT
 import com.rahulrav.Stubs.MANIFEST_WITH_INITIALIZER
 import com.rahulrav.Stubs.MANIFEST_WITH_NO_INITIALIZER
 import com.rahulrav.Stubs.OTHER_CLASS_IMPLEMENTS_CONFIGURATION_PROVIDER
+import com.rahulrav.Stubs.TIME_TRAVEL_EXPERIMENT_KT
+import com.rahulrav.Stubs.TIME_TRAVEL_PROVIDER_KT
+import com.rahulrav.Stubs.USE_TIME_TRAVEL_EXPERIMENT_FROM_JAVA
 import com.rahulrav.Stubs.WORK_MANAGER_CONFIGURATION_INTERFACE
 import org.junit.Test
 
@@ -112,5 +116,34 @@ class DetectorTest {
                         1 errors, 0 warnings
                       """.trimIndent()
                 )
+    }
+    @Test
+    fun testExperimentalDetector() {
+        val input = arrayOf(
+                EXPERIMENTAL_KT,
+                TIME_TRAVEL_EXPERIMENT_KT,
+                TIME_TRAVEL_PROVIDER_KT,
+                USE_TIME_TRAVEL_EXPERIMENT_FROM_JAVA
+        )
+
+        /* ktlint-disable max-line-length */
+        val expected = """
+src/com/rahulrav/app/UseTimeTravelExperimentFromJava.java:18: Error: This declaration is experimental and its usage should be marked with
+'@com.rahulrav.app.TimeTravelExperiment' or '@UseExperimental(markerClass = com.rahulrav.app.TimeTravelExperiment.class)' [UnsafeExperimentalUsageError]
+        new TimeTravelProvider().setTime(-1);
+        ~~~~~~~~~~~~~~~~~~~~~~~~
+src/com/rahulrav/app/UseTimeTravelExperimentFromJava.java:18: Error: This declaration is experimental and its usage should be marked with
+'@com.rahulrav.app.TimeTravelExperiment' or '@UseExperimental(markerClass = com.rahulrav.app.TimeTravelExperiment.class)' [UnsafeExperimentalUsageError]
+        new TimeTravelProvider().setTime(-1);
+                                 ~~~~~~~
+2 errors, 0 warnings
+        """
+        /* ktlint-enable max-line-length */
+
+        lint().files(*input)
+                .allowMissingSdk()
+                .issues(ExperimentalDetector.ISSUE)
+                .run()
+                .expect(expected.trimIndent())
     }
 }
