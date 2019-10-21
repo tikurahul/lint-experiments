@@ -5,9 +5,12 @@ import com.rahulrav.IssueRegistry.Companion.BadConfigurationProviderIssue
 import com.rahulrav.IssueRegistry.Companion.NoisyIssue
 import com.rahulrav.IssueRegistry.Companion.RemoveWorkManagerIntializerIssue
 import com.rahulrav.Stubs.ANDROID_APP_CLASS
+import com.rahulrav.Stubs.ANDROID_LOG_JAVA
 import com.rahulrav.Stubs.APP_IMPLEMENTS_CONFIGURATION_PROVIDER
 import com.rahulrav.Stubs.EMPTY_MANIFEST
 import com.rahulrav.Stubs.EXPERIMENTAL_KT
+import com.rahulrav.Stubs.LOG_WTF_JAVA
+import com.rahulrav.Stubs.LOG_WTF_KT
 import com.rahulrav.Stubs.MANIFEST_WITH_INITIALIZER
 import com.rahulrav.Stubs.MANIFEST_WITH_NO_INITIALIZER
 import com.rahulrav.Stubs.OTHER_CLASS_IMPLEMENTS_CONFIGURATION_PROVIDER
@@ -117,6 +120,7 @@ class DetectorTest {
                       """.trimIndent()
                 )
     }
+
     @Test
     fun testExperimentalDetector() {
         val input = arrayOf(
@@ -143,6 +147,26 @@ src/com/rahulrav/app/UseTimeTravelExperimentFromJava.java:18: Error: This declar
         lint().files(*input)
                 .allowMissingSdk()
                 .issues(ExperimentalDetector.ISSUE)
+                .run()
+                .expect(expected.trimIndent())
+    }
+
+    @Test
+    fun testLogWtfDetector() {
+        /* ktlint-disable max-line-length */
+        val expected = """
+src/com/rahulrav/app/WhatATerribleFailure.kt:7: Error: Usage of Log.wtf() is prohibited [LogWtfUsageError]
+        Log.wtf(clazz.name, message)
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+1 errors, 0 warnings
+            """.trimIndent()
+        /* ktlint-enable max-line-length */
+
+        lint().files(
+                ANDROID_LOG_JAVA,
+                LOG_WTF_KT)
+                .allowMissingSdk() // The one SDK class that we need has been added manually!
+                .issues(LogWtfDetector.ISSUE)
                 .run()
                 .expect(expected.trimIndent())
     }

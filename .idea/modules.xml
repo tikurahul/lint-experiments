@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Scratch-lint-experiments.iml" filepath="$PROJECT_DIR$/Scratch-lint-experiments.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-lint-experiments.iml" filepath="$PROJECT_DIR$/android-lint-experiments.iml" group="lint-experiments" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="lint-experiments/app" />
+      <module fileurl="file://$PROJECT_DIR$/github-lint-experiments.iml" filepath="$PROJECT_DIR$/github-lint-experiments.iml" group="lint-experiments" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" group="lint-experiments/library" />
       <module fileurl="file://$PROJECT_DIR$/lint/lint.iml" filepath="$PROJECT_DIR$/lint/lint.iml" group="lint-experiments/lint" />
-      <module fileurl="file://$PROJECT_DIR$/lint-experiments.iml" filepath="$PROJECT_DIR$/lint-experiments.iml" group="lint-experiments" />
     </modules>
   </component>
 </project>
