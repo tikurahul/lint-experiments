@@ -12,7 +12,8 @@ class IssueRegistry : IssueRegistry() {
                 NoisyIssue,
                 BadConfigurationProviderIssue,
                 RemoveWorkManagerIntializerIssue,
-                ExperimentalDetector.ISSUE
+                ExperimentalDetector.ISSUE,
+                LogWtfDetector.ISSUE
         )
 
     companion object {

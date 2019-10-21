@@ -110,44 +110,46 @@ object Stubs {
      * This is a workaround for the Kotlin standard library used by the Lint test harness not
      * including the Experimental annotation by default.
      */
-    val EXPERIMENTAL_KT: TestFile = kotlin("""
-            package kotlin
-
-            import kotlin.annotation.AnnotationRetention.BINARY
-            import kotlin.annotation.AnnotationRetention.SOURCE
-            import kotlin.annotation.AnnotationTarget.*
-            import kotlin.internal.RequireKotlin
-            import kotlin.internal.RequireKotlinVersionKind
-            import kotlin.reflect.KClass
-
-            @Target(ANNOTATION_CLASS)
-            @Retention(BINARY)
-            @SinceKotlin("1.2")
-            @RequireKotlin("1.2.50", versionKind = RequireKotlinVersionKind.COMPILER_VERSION)
-            @Suppress("ANNOTATION_CLASS_MEMBER")
-            public annotation class Experimental(val level: Level = Level.ERROR) {
-                public enum class Level {
-                    WARNING,
-                    ERROR,
+    val EXPERIMENTAL_KT: TestFile = kotlin(
+            "kotlin/Experimental.kt",
+            """
+                package kotlin
+    
+                import kotlin.annotation.AnnotationRetention.BINARY
+                import kotlin.annotation.AnnotationRetention.SOURCE
+                import kotlin.annotation.AnnotationTarget.*
+                import kotlin.internal.RequireKotlin
+                import kotlin.internal.RequireKotlinVersionKind
+                import kotlin.reflect.KClass
+    
+                @Target(ANNOTATION_CLASS)
+                @Retention(BINARY)
+                @SinceKotlin("1.2")
+                @RequireKotlin("1.2.50", versionKind = RequireKotlinVersionKind.COMPILER_VERSION)
+                @Suppress("ANNOTATION_CLASS_MEMBER")
+                public annotation class Experimental(val level: Level = Level.ERROR) {
+                    public enum class Level {
+                        WARNING,
+                        ERROR,
+                    }
                 }
-            }
-
-            @Target(
-                CLASS, PROPERTY, LOCAL_VARIABLE, VALUE_PARAMETER, CONSTRUCTOR, FUNCTION, PROPERTY_GETTER, PROPERTY_SETTER, EXPRESSION, FILE, TYPEALIAS
-            )
-            @Retention(SOURCE)
-            @SinceKotlin("1.2")
-            @RequireKotlin("1.2.50", versionKind = RequireKotlinVersionKind.COMPILER_VERSION)
-            public annotation class UseExperimental(
-                vararg val markerClass: KClass<out Annotation>
-            )
-
-            @Target(CLASS, PROPERTY, CONSTRUCTOR, FUNCTION, TYPEALIAS)
-            @Retention(BINARY)
-            internal annotation class WasExperimental(
-                vararg val markerClass: KClass<out Annotation>
-            )
-        """.trimIndent())
+    
+                @Target(
+                    CLASS, PROPERTY, LOCAL_VARIABLE, VALUE_PARAMETER, CONSTRUCTOR, FUNCTION, PROPERTY_GETTER, PROPERTY_SETTER, EXPRESSION, FILE, TYPEALIAS
+                )
+                @Retention(SOURCE)
+                @SinceKotlin("1.2")
+                @RequireKotlin("1.2.50", versionKind = RequireKotlinVersionKind.COMPILER_VERSION)
+                public annotation class UseExperimental(
+                    vararg val markerClass: KClass<out Annotation>
+                )
+    
+                @Target(CLASS, PROPERTY, CONSTRUCTOR, FUNCTION, TYPEALIAS)
+                @Retention(BINARY)
+                internal annotation class WasExperimental(
+                    vararg val markerClass: KClass<out Annotation>
+                )
+            """).indented().within("src")
 
     val TIME_TRAVEL_EXPERIMENT_KT: TestFile = kotlin(
             "com/rahulrav/app/TimeTravelExperiment.kt",
@@ -197,6 +199,63 @@ object Stubs {
                 
                     void violateTimeTravelAccords() {
                         new TimeTravelProvider().setTime(-1);
+                    }
+                }
+            """).indented().within("src")
+
+    /**
+     * [TestFile] containing Log.java from the Android SDK.
+     *
+     * This is a hacky workaround for the Android SDK not being included on the Lint test harness
+     * classpath. Ideally, we'd specify ANDROID_HOME as an environment variable.
+     */
+    val ANDROID_LOG_JAVA = java(
+            """
+                package android.util;
+                
+                public class Log {
+                    public static void wtf(String tag, String msg) {
+                        // Stub!
+                    }
+                }
+            """.trimIndent())
+
+    val LOG_WTF_KT = kotlin(
+            "com/rahulrav/app/WhatATerribleFailure.kt",
+            """
+                package com.rahulrav.app
+                
+                import android.util.Log
+                
+                class WhatATerribleFailure {
+                    fun <T> logAsWtf(clazz: Class<T>, message: String) {
+                        Log.wtf(clazz.name, message)
+
+                        wtf(message)
+                    }
+                
+                    fun wtf(message: String) {
+                        Log.d("TAG", message)
+                    }
+                }
+            """).indented().within("src")
+
+    val LOG_WTF_JAVA = java(
+            "com/rahulrav/app/WhatATerribleFailureJava.java",
+            """
+                package com.rahulrav.app;
+                
+                import android.util.Log;
+                
+                class WhatATerribleFailureJava {
+                    void logAsWtf(Class<?> clazz, String message) {
+                        Log.wtf(clazz.getName(), message);
+                
+                        wtf(message);
+                    }
+                
+                    void wtf(String message) {
+                        Log.d("TAG", message);
                     }
                 }
             """).indented().within("src")
