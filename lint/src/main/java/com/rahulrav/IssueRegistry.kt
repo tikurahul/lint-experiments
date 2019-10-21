@@ -11,7 +11,8 @@ class IssueRegistry : IssueRegistry() {
         get() = listOf(
                 NoisyIssue,
                 BadConfigurationProviderIssue,
-                RemoveWorkManagerIntializerIssue
+                RemoveWorkManagerIntializerIssue,
+                ExperimentalDetector.ISSUE
         )
 
     companion object {

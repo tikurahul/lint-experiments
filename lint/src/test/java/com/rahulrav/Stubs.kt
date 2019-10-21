@@ -2,6 +2,7 @@ package com.rahulrav
 
 import com.android.tools.lint.checks.infrastructure.LintDetectorTest.kotlin
 import com.android.tools.lint.checks.infrastructure.TestFile
+import com.android.tools.lint.checks.infrastructure.TestFiles.java
 import com.android.tools.lint.checks.infrastructure.TestFiles.manifest
 
 object Stubs {
@@ -102,4 +103,101 @@ object Stubs {
                 }
             """)
             .indented().within("src")
+
+    /**
+     * [TestFile] containing Experimental.kt from the Kotlin standard library.
+     *
+     * This is a workaround for the Kotlin standard library used by the Lint test harness not
+     * including the Experimental annotation by default.
+     */
+    val EXPERIMENTAL_KT: TestFile = kotlin("""
+            package kotlin
+
+            import kotlin.annotation.AnnotationRetention.BINARY
+            import kotlin.annotation.AnnotationRetention.SOURCE
+            import kotlin.annotation.AnnotationTarget.*
+            import kotlin.internal.RequireKotlin
+            import kotlin.internal.RequireKotlinVersionKind
+            import kotlin.reflect.KClass
+
+            @Target(ANNOTATION_CLASS)
+            @Retention(BINARY)
+            @SinceKotlin("1.2")
+            @RequireKotlin("1.2.50", versionKind = RequireKotlinVersionKind.COMPILER_VERSION)
+            @Suppress("ANNOTATION_CLASS_MEMBER")
+            public annotation class Experimental(val level: Level = Level.ERROR) {
+                public enum class Level {
+                    WARNING,
+                    ERROR,
+                }
+            }
+
+            @Target(
+                CLASS, PROPERTY, LOCAL_VARIABLE, VALUE_PARAMETER, CONSTRUCTOR, FUNCTION, PROPERTY_GETTER, PROPERTY_SETTER, EXPRESSION, FILE, TYPEALIAS
+            )
+            @Retention(SOURCE)
+            @SinceKotlin("1.2")
+            @RequireKotlin("1.2.50", versionKind = RequireKotlinVersionKind.COMPILER_VERSION)
+            public annotation class UseExperimental(
+                vararg val markerClass: KClass<out Annotation>
+            )
+
+            @Target(CLASS, PROPERTY, CONSTRUCTOR, FUNCTION, TYPEALIAS)
+            @Retention(BINARY)
+            internal annotation class WasExperimental(
+                vararg val markerClass: KClass<out Annotation>
+            )
+        """.trimIndent())
+
+    val TIME_TRAVEL_EXPERIMENT_KT: TestFile = kotlin(
+            "com/rahulrav/app/TimeTravelExperiment.kt",
+            """
+                package com.rahulrav.app
+                
+                @Experimental
+                @Retention(AnnotationRetention.BINARY)
+                @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+                annotation class TimeTravelExperiment
+            """).indented().within("src")
+
+    val TIME_TRAVEL_PROVIDER_KT = kotlin(
+            "com/rahulrav/app/TimeTravelProvider.kt",
+            """
+                package com.rahulrav.app
+                
+                @Suppress("unused")
+                @TimeTravelExperiment
+                class TimeTravelProvider {
+                    var timeInternal: Long = 0
+                
+                    fun setTime(timestamp: Long) {
+                        timeInternal = timestamp
+                    }
+                }
+            """).indented().within("src")
+
+    val USE_TIME_TRAVEL_EXPERIMENT_FROM_JAVA = java(
+            "com/rahulrav/app/UseTimeTravelExperimentFromJava.java",
+            """
+                package com.rahulrav.app;
+                
+                import kotlin.UseExperimental;
+                
+                @SuppressWarnings("unused")
+                class UseTimeTravelExperimentFromJava {
+                    @TimeTravelExperiment
+                    void setTimeToNow() {
+                        new TimeTravelProvider().setTime(System.currentTimeMillis());
+                    }
+                
+                    @UseExperimental(markerClass = TimeTravelExperiment.class)
+                    void setTimeToEpoch() {
+                        new TimeTravelProvider().setTime(0);
+                    }
+                
+                    void violateTimeTravelAccords() {
+                        new TimeTravelProvider().setTime(-1);
+                    }
+                }
+            """).indented().within("src")
 }
