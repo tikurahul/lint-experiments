@@ -16,6 +16,8 @@ class IssueRegistry : IssueRegistry() {
                 LogWtfDetector.ISSUE
         )
 
+    override val api: Int = CURRENT_API
+
     companion object {
         private const val NoisyIssueId = "NoisyIssueId"
         const val NoisyIssueDescription = "This is a noisy issue. Feel free to ignore for now."
